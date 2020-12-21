@@ -21,8 +21,8 @@ func str(v string) *string { return &v }
 func i(v int) *int         { return &v }
 func b(v bool) *bool       { return &v }
 
-// fakeGitHubAPIServ creates a fake GitHub API server that returns results from
-// a hardcoded set of repositories.
+// fakeGitHubAPIServ creates a fake GitHub REST API server that returns results
+// from a hardcoded set of repositories.
 func fakeGitHubAPIServ(t *testing.T) *httptest.Server {
 	t.Helper()
 
@@ -91,10 +91,9 @@ func fakeGitHubAPIServ(t *testing.T) *httptest.Server {
 			}
 		}
 
-		// Marshal the response.
-
 		// We don't deal with pagination here b/c the TopN tool pages by 100 and we
 		// have < 100 fake repos. But ideally a fake should deal with pagination.
+
 		b, err := json.Marshal(result)
 		if err != nil {
 			t.Fatalf("Marshal(%+v) failed: %v", result, err)

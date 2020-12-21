@@ -11,7 +11,7 @@ import (
 	"github.com/shurcooL/githubv4"
 )
 
-type repos []*repo
+type repos []*Repo
 
 func (r repos) Len() int      { return len(r) }
 func (r repos) Swap(i, j int) { r[i], r[j] = r[j], r[i] }
@@ -51,20 +51,22 @@ func (r byContribs) Less(i, j int) bool {
 	return contribI > contribJ
 }
 
-type repo struct {
+type PullReq struct {
+	TotalCount int
+}
+
+type Repo struct {
 	Name           string
 	StargazerCount int
 	ForkCount      int
-	PullRequests   struct {
-		TotalCount int
-	}
+	PullRequests   *PullReq
 }
 
 var q struct {
 	Search struct {
 		Edges []struct {
 			Node struct {
-				Repository repo `graphql:"... on Repository"`
+				Repository Repo `graphql:"... on Repository"`
 			}
 		}
 		PageInfo struct {
@@ -81,13 +83,13 @@ type TopN struct {
 }
 
 // List returns the top-n GitHub repos for the org by metric.
-func (t *TopN) List(ctx context.Context, org string, n int, metric string) ([]*repo, error) {
+func (t *TopN) List(ctx context.Context, org string, n int, metric string) ([]*Repo, error) {
 	vars := map[string]interface{}{
 		"query":  githubv4.String("org:" + org),
 		"cursor": (*githubv4.String)(nil),
 	}
 
-	var repos []*repo
+	var repos []*Repo
 	for {
 		err := t.Client.Query(ctx, &q, vars)
 		if err != nil {
