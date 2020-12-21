@@ -118,6 +118,7 @@ func TestList(t *testing.T) {
 
 	serv := fakeGitHubAPIServ(t)
 	client := githubv4.NewEnterpriseClient(serv.URL+"/graphql", nil)
+	topn := repoql.TopN{Client: client}
 
 	tests := []struct {
 		desc      string
@@ -291,7 +292,6 @@ func TestList(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.desc, func(t *testing.T) {
-			topn := repoql.TopN{Client: client}
 			repos, err := topn.List(ctx, "netflix", tt.n, tt.metric)
 			if err != nil {
 				t.Fatalf(`List("netflix", %d, %q) failed: %v`, tt.n, tt.metric, err)

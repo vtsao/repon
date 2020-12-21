@@ -15,7 +15,8 @@ Supported metrics are:
 1. `go install -i github.com/vtsao/repon`
 1. Authentication is required via a [GitHub Personal Access Token
    (PAT)](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token)
-   with repository privileges.
+   with [`repo`
+   scope](https://docs.github.com/en/free-pro-team@latest/developers/apps/scopes-for-oauth-apps).
 1. `repon --pat=[YOUR_PAT] --org=netflix --n=5 --metric=prs`
 
 Sample output:
