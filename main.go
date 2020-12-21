@@ -28,7 +28,7 @@ var (
 
 	// See https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token
 	// for how to create one.
-	pat = flag.String("pat", "", "required, GitHub OAuth2 personal access token")
+	pat = flag.String("pat", "", "required, GitHub OAuth2 personal access token with repo privileges")
 
 	useGraphQL = flag.Bool("use_graphql", true, "whether to use GitHub's GraphQL API or the REST API")
 
