@@ -1,6 +1,6 @@
-# repo-n
+# repon
 
-`repo-n` is a CLI tool that finds the top-n GitHub repositories for an
+`repon` is a CLI tool that finds the top-n GitHub repositories for an
 organization by a metric.
 
 Supported metrics are:
@@ -12,17 +12,16 @@ Supported metrics are:
 
 ## Getting started
 
-1. `go get -u github.com/vtsao/repon`
-1. `go build -o repo-n main.go`
+1. `go install -i github.com/vtsao/repon`
 1. Authentication is required via a [GitHub Personal Access Token
    (PAT)](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token)
    with repository privileges.
-1. `./repo-n --pat=[YOUR_PAT] --org=netflix --n=5 --metric=prs`
+1. `repon --pat=[YOUR_PAT] --org=netflix --n=5 --metric=prs`
 
 Sample output:
 
 ```shell
-$ repo-n --pat=[REDACTED] --org=netflix --n=5 --metric=prs
+$ repon --pat=[REDACTED] --org=netflix --n=5 --metric=prs
 2020/12/20 22:59:43 Using GitHub GraphQL API
 Listing top 5 repos for org "netflix" by "prs"...
 1) repo: "lemur", pull requests: 2812
@@ -35,7 +34,7 @@ Took 5.1702134s
 
 ## GitHub GraphQL API vs. GitHub REST API
 
-`repo-n` supports using both the [GitHub GraphQL
+`repon` supports using both the [GitHub GraphQL
 API](https://docs.github.com/en/free-pro-team@latest/graphql) and [GitHub REST
 API](https://docs.github.com/en/free-pro-team@latest/rest). The GraphQL API is
 used by default. You can specify using the REST API via `--use_graphql=false`.

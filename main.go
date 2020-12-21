@@ -1,9 +1,8 @@
-// Binary repo-n lists the top-n GitHub repositories for an organization based
-// on a metric.
+// Binary repon lists the top-n GitHub repositories for an organization based on
+// a metric.
 //
 // Usage:
-//   go build -o repo-n main.go
-//   ./repo-n --pat=[YOUR_PAT] --org=netflix --n=10 --metric=stars
+//   repon --pat=[YOUR_PAT] --org=netflix --n=10 --metric=stars
 package main
 
 import (
