@@ -15,7 +15,8 @@ Supported metrics are:
 1. `go get -u github.com/vtsao/repon`
 1. `go build -o repo-n main.go`
 1. Authentication is required via a [GitHub Personal Access Token
-   (PAT)](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token).
+   (PAT)](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token)
+   with repository privileges.
 1. `./repo-n --pat=[YOUR_PAT] --org=netflix --n=5 --metric=prs`
 
 Sample output:
