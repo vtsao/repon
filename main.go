@@ -3,7 +3,7 @@
 //
 // Usage:
 //   go build -o repo-n main.go
-//   ./repo-n --org=netflix --n=10 --metric=stars
+//   ./repo-n --pat=[YOUR_PAT] --org=netflix --n=10 --metric=stars
 package main
 
 import (
@@ -15,7 +15,10 @@ import (
 	"time"
 
 	"github.com/google/go-github/v33/github"
+	"github.com/shurcooL/githubv4"
 	"github.com/vtsao/repon/repo"
+	"github.com/vtsao/repon/repoql"
+	"golang.org/x/oauth2"
 )
 
 var (
@@ -23,20 +26,16 @@ var (
 	n      = flag.Int("n", 0, "required, the top n repos to get")
 	metric = flag.String("metric", "stars", `the metric to sort repos by, must be one of ["stars", "forks", "prs", "contribs"]`)
 
-	// Specify these if running into rate limit issues. An OAuth app can be
-	// created at https://github.com/settings/developers.
-	clientID     = flag.String("client_id", "", "OAuth2 client ID for higher rate limits")
-	clientSecret = flag.String("client_secret", "", "OAuth2 client secret for higher rate limits")
+	// See https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token
+	// for how to create one.
+	pat = flag.String("pat", "", "required, GitHub OAuth2 personal access token")
 
-	fillPRsConcurrency = flag.Int("fill_prs_concurrency", 10, `number of concurrent calls to GitHub Issues API to count PRs per repo if using one of ["prs", "contribs"]`)
+	useGraphQL = flag.Bool("use_graphql", true, "whether to use GitHub's GraphQL API or the REST API")
+
+	fillPRsConcurrency = flag.Int("fill_prs_concurrency", 10, `number of concurrent calls to GitHub Issues REST API to count PRs per repo if using one of ["prs", "contribs"]; only applicable if --use_graph_ql=false`)
 )
 
-func main() {
-	start := time.Now()
-
-	flag.Parse()
-	ctx := context.Background()
-
+func validateFlags() {
 	if *org == "" {
 		flag.PrintDefaults()
 		log.Fatal("--org is required")
@@ -49,21 +48,17 @@ func main() {
 		flag.PrintDefaults()
 		log.Fatal(`--metric must be one of ["stars", "forks", "prs", "contribs"]`)
 	}
-	if (*clientID == "") != (*clientSecret == "") {
+	if *pat == "" {
 		flag.PrintDefaults()
-		log.Fatal("Either none or both of --client_id and --client_secret must be specified")
+		log.Fatal("--pat is required")
 	}
+}
 
-	var httpClient *http.Client
-	if *clientID != "" && *clientSecret != "" {
-		t := &github.UnauthenticatedRateLimitedTransport{
-			ClientID:     *clientID,
-			ClientSecret: *clientSecret,
-		}
-		httpClient = t.Client()
+func repon(ctx context.Context, client *http.Client) {
+	topn := repo.TopN{
+		Client:             github.NewClient(client),
+		FillPRsConcurrency: *fillPRsConcurrency,
 	}
-	client := github.NewClient(httpClient)
-	topn := repo.TopN{Client: client, FillPRsConcurrency: *fillPRsConcurrency}
 
 	fmt.Printf("Listing top %d repos for org %q by %q...\n", *n, *org, *metric)
 	repos, err := topn.List(ctx, *org, *n, *metric)
@@ -86,6 +81,49 @@ func main() {
 			}
 			fmt.Printf("%d) repo: %q, contribution percentage: %.2f%%\n", i+1, *r.Name, contrib*100)
 		}
+	}
+}
+
+func reponQL(ctx context.Context, client *http.Client) {
+	topn := repoql.TopN{Client: githubv4.NewClient(client)}
+
+	fmt.Printf("Listing top %d repos for org %q by %q...\n", *n, *org, *metric)
+	repos, err := topn.List(ctx, *org, *n, *metric)
+	if err != nil {
+		log.Fatalf("Error listing top %d repos for org %q by %q: %v", *n, *org, *metric, err)
+	}
+
+	for i, r := range repos {
+		switch *metric {
+		case "stars":
+			fmt.Printf("%d) repo: %q, stars: %d\n", i+1, r.Name, r.StargazerCount)
+		case "forks":
+			fmt.Printf("%d) repo: %q, forks: %d\n", i+1, r.Name, r.ForkCount)
+		case "prs":
+			fmt.Printf("%d) repo: %q, pull requests: %d\n", i+1, r.Name, r.PullRequests.TotalCount)
+		case "contribs":
+			var contrib float64
+			if forks := r.ForkCount; forks > 0 {
+				contrib = float64(r.PullRequests.TotalCount) / float64(forks)
+			}
+			fmt.Printf("%d) repo: %q, contribution percentage: %.2f%%\n", i+1, r.Name, contrib*100)
+		}
+	}
+}
+
+func main() {
+	start := time.Now()
+	ctx := context.Background()
+	flag.Parse()
+	validateFlags()
+	client := oauth2.NewClient(ctx, oauth2.StaticTokenSource(&oauth2.Token{AccessToken: *pat}))
+
+	if *useGraphQL {
+		log.Print("Using GitHub GraphQL API")
+		reponQL(ctx, client)
+	} else {
+		log.Print("Using GitHub REST API")
+		repon(ctx, client)
 	}
 
 	fmt.Printf("Took %s\n", time.Since(start))

@@ -1,5 +1,6 @@
-// Package repo implements finding the top-n GitHub repositories in an
-// organization based on different metrics, such as how many stars a repo has.
+// Package repo uses the GitHub REST API to implement finding the top-n GitHub
+// repositories in an organization based on different metrics, such as how many
+// stars a repo has.
 package repo
 
 import (
@@ -44,8 +45,8 @@ type Repo struct {
 	PRs int
 }
 
-// TopN interfaces with the GitHub API to find the top-n GitHub repos in an org
-// based on a metric.
+// TopN interfaces with the GitHub REST API to find the top-n GitHub repos in an
+// org based on a metric.
 type TopN struct {
 	Client             *github.Client
 	FillPRsConcurrency int

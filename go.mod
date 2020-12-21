@@ -13,6 +13,8 @@ require (
 	github.com/iancoleman/strcase v0.1.2 // indirect
 	github.com/lyft/protoc-gen-star v0.5.2 // indirect
 	github.com/nbutton23/zxcvbn-go v0.0.0-20180912185939-ae427f1e4c1d // indirect
+	github.com/shurcooL/githubv4 v0.0.0-20201206200315-234843c633fa
+	github.com/shurcooL/graphql v0.0.0-20200928012149-18c5c3165e3a // indirect
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 	golang.org/x/tools v0.0.0-20201218024724-ae774e9781d2 // indirect
 )
