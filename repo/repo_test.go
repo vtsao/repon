@@ -17,10 +17,6 @@ import (
 	"github.com/vtsao/repon/repo"
 )
 
-func str(v string) *string { return &v }
-func i(v int) *int         { return &v }
-func b(v bool) *bool       { return &v }
-
 // fakeGitHubAPIServ creates a fake GitHub REST API server that returns results
 // from a hardcoded set of repositories.
 func fakeGitHubAPIServ(t *testing.T) *httptest.Server {
@@ -29,49 +25,49 @@ func fakeGitHubAPIServ(t *testing.T) *httptest.Server {
 	router := mux.NewRouter()
 	router.HandleFunc("/search/repositories", func(w http.ResponseWriter, r *http.Request) {
 		result := &github.RepositoriesSearchResult{
-			Total: i(7),
+			Total: github.Int(7),
 			Repositories: []*github.Repository{
 				{
-					Name:            str("security_monkey"),
-					StargazersCount: i(10047),
-					ForksCount:      i(792),
-					HasIssues:       b(true),
+					Name:            github.String("security_monkey"),
+					StargazersCount: github.Int(10047),
+					ForksCount:      github.Int(792),
+					HasIssues:       github.Bool(true),
 				},
 				{
-					Name:            str("metaflow"),
-					StargazersCount: i(20787),
-					ForksCount:      i(2963),
-					HasIssues:       b(true),
+					Name:            github.String("metaflow"),
+					StargazersCount: github.Int(20787),
+					ForksCount:      github.Int(2963),
+					HasIssues:       github.Bool(true),
 				},
 				{
-					Name:            str("SimianArmy"),
-					StargazersCount: i(0),
-					ForksCount:      i(4253),
-					HasIssues:       b(true),
+					Name:            github.String("SimianArmy"),
+					StargazersCount: github.Int(0),
+					ForksCount:      github.Int(4253),
+					HasIssues:       github.Bool(true),
 				},
 				{
-					Name:            str("chaosmonkey"),
-					StargazersCount: i(1),
-					ForksCount:      i(1017),
-					HasIssues:       b(true),
+					Name:            github.String("chaosmonkey"),
+					StargazersCount: github.Int(1),
+					ForksCount:      github.Int(1017),
+					HasIssues:       github.Bool(true),
 				},
 				{
-					Name:            str("zuul"),
-					StargazersCount: i(0),
-					ForksCount:      i(0),
-					HasIssues:       b(true),
+					Name:            github.String("zuul"),
+					StargazersCount: github.Int(0),
+					ForksCount:      github.Int(0),
+					HasIssues:       github.Bool(true),
 				},
 				{
-					Name:            str("Hystrix"),
-					StargazersCount: i(10248),
-					ForksCount:      i(728),
-					HasIssues:       b(true),
+					Name:            github.String("Hystrix"),
+					StargazersCount: github.Int(10248),
+					ForksCount:      github.Int(728),
+					HasIssues:       github.Bool(true),
 				},
 				{
-					Name:            str("boqboqboq"),
-					StargazersCount: i(64),
-					ForksCount:      i(9),
-					HasIssues:       b(true),
+					Name:            github.String("boqboqboq"),
+					StargazersCount: github.Int(64),
+					ForksCount:      github.Int(9),
+					HasIssues:       github.Bool(true),
 				},
 			},
 		}
@@ -171,23 +167,23 @@ func TestList(t *testing.T) {
 			wantRepos: []*repo.Repo{
 				{
 					Repository: &github.Repository{
-						Name:            str("metaflow"),
-						StargazersCount: i(20787),
-						ForksCount:      i(2963),
+						Name:            github.String("metaflow"),
+						StargazersCount: github.Int(20787),
+						ForksCount:      github.Int(2963),
 					},
 				},
 				{
 					Repository: &github.Repository{
-						Name:            str("Hystrix"),
-						StargazersCount: i(10248),
-						ForksCount:      i(728),
+						Name:            github.String("Hystrix"),
+						StargazersCount: github.Int(10248),
+						ForksCount:      github.Int(728),
 					},
 				},
 				{
 					Repository: &github.Repository{
-						Name:            str("security_monkey"),
-						StargazersCount: i(10047),
-						ForksCount:      i(792),
+						Name:            github.String("security_monkey"),
+						StargazersCount: github.Int(10047),
+						ForksCount:      github.Int(792),
 					},
 				},
 			},
@@ -200,23 +196,23 @@ func TestList(t *testing.T) {
 			wantRepos: []*repo.Repo{
 				{
 					Repository: &github.Repository{
-						Name:            str("SimianArmy"),
-						StargazersCount: i(0),
-						ForksCount:      i(4253),
+						Name:            github.String("SimianArmy"),
+						StargazersCount: github.Int(0),
+						ForksCount:      github.Int(4253),
 					},
 				},
 				{
 					Repository: &github.Repository{
-						Name:            str("metaflow"),
-						StargazersCount: i(20787),
-						ForksCount:      i(2963),
+						Name:            github.String("metaflow"),
+						StargazersCount: github.Int(20787),
+						ForksCount:      github.Int(2963),
 					},
 				},
 				{
 					Repository: &github.Repository{
-						Name:            str("chaosmonkey"),
-						StargazersCount: i(1),
-						ForksCount:      i(1017),
+						Name:            github.String("chaosmonkey"),
+						StargazersCount: github.Int(1),
+						ForksCount:      github.Int(1017),
 					},
 				},
 			},
@@ -229,25 +225,25 @@ func TestList(t *testing.T) {
 			wantRepos: []*repo.Repo{
 				{
 					Repository: &github.Repository{
-						Name:            str("SimianArmy"),
-						StargazersCount: i(0),
-						ForksCount:      i(4253),
+						Name:            github.String("SimianArmy"),
+						StargazersCount: github.Int(0),
+						ForksCount:      github.Int(4253),
 					},
 					PRs: 39811,
 				},
 				{
 					Repository: &github.Repository{
-						Name:            str("metaflow"),
-						StargazersCount: i(20787),
-						ForksCount:      i(2963),
+						Name:            github.String("metaflow"),
+						StargazersCount: github.Int(20787),
+						ForksCount:      github.Int(2963),
 					},
 					PRs: 34555,
 				},
 				{
 					Repository: &github.Repository{
-						Name:            str("zuul"),
-						StargazersCount: i(0),
-						ForksCount:      i(0),
+						Name:            github.String("zuul"),
+						StargazersCount: github.Int(0),
+						ForksCount:      github.Int(0),
 					},
 					PRs: 2305,
 				},
@@ -261,25 +257,25 @@ func TestList(t *testing.T) {
 			wantRepos: []*repo.Repo{
 				{
 					Repository: &github.Repository{
-						Name:            str("metaflow"),
-						StargazersCount: i(20787),
-						ForksCount:      i(2963),
+						Name:            github.String("metaflow"),
+						StargazersCount: github.Int(20787),
+						ForksCount:      github.Int(2963),
 					},
 					PRs: 34555,
 				},
 				{
 					Repository: &github.Repository{
-						Name:            str("SimianArmy"),
-						StargazersCount: i(0),
-						ForksCount:      i(4253),
+						Name:            github.String("SimianArmy"),
+						StargazersCount: github.Int(0),
+						ForksCount:      github.Int(4253),
 					},
 					PRs: 39811,
 				},
 				{
 					Repository: &github.Repository{
-						Name:            str("boqboqboq"),
-						StargazersCount: i(64),
-						ForksCount:      i(9),
+						Name:            github.String("boqboqboq"),
+						StargazersCount: github.Int(64),
+						ForksCount:      github.Int(9),
 					},
 					PRs: 1,
 				},
@@ -293,9 +289,9 @@ func TestList(t *testing.T) {
 			wantRepos: []*repo.Repo{
 				{
 					Repository: &github.Repository{
-						Name:            str("metaflow"),
-						StargazersCount: i(20787),
-						ForksCount:      i(2963),
+						Name:            github.String("metaflow"),
+						StargazersCount: github.Int(20787),
+						ForksCount:      github.Int(2963),
 					},
 				},
 			},
@@ -308,51 +304,51 @@ func TestList(t *testing.T) {
 			wantRepos: []*repo.Repo{
 				{
 					Repository: &github.Repository{
-						Name:            str("metaflow"),
-						StargazersCount: i(20787),
-						ForksCount:      i(2963),
+						Name:            github.String("metaflow"),
+						StargazersCount: github.Int(20787),
+						ForksCount:      github.Int(2963),
 					},
 				},
 				{
 					Repository: &github.Repository{
-						Name:            str("Hystrix"),
-						StargazersCount: i(10248),
-						ForksCount:      i(728),
+						Name:            github.String("Hystrix"),
+						StargazersCount: github.Int(10248),
+						ForksCount:      github.Int(728),
 					},
 				},
 				{
 					Repository: &github.Repository{
-						Name:            str("security_monkey"),
-						StargazersCount: i(10047),
-						ForksCount:      i(792),
+						Name:            github.String("security_monkey"),
+						StargazersCount: github.Int(10047),
+						ForksCount:      github.Int(792),
 					},
 				},
 				{
 					Repository: &github.Repository{
-						Name:            str("boqboqboq"),
-						StargazersCount: i(64),
-						ForksCount:      i(9),
+						Name:            github.String("boqboqboq"),
+						StargazersCount: github.Int(64),
+						ForksCount:      github.Int(9),
 					},
 				},
 				{
 					Repository: &github.Repository{
-						Name:            str("chaosmonkey"),
-						StargazersCount: i(1),
-						ForksCount:      i(1017),
+						Name:            github.String("chaosmonkey"),
+						StargazersCount: github.Int(1),
+						ForksCount:      github.Int(1017),
 					},
 				},
 				{
 					Repository: &github.Repository{
-						Name:            str("SimianArmy"),
-						StargazersCount: i(0),
-						ForksCount:      i(4253),
+						Name:            github.String("SimianArmy"),
+						StargazersCount: github.Int(0),
+						ForksCount:      github.Int(4253),
 					},
 				},
 				{
 					Repository: &github.Repository{
-						Name:            str("zuul"),
-						StargazersCount: i(0),
-						ForksCount:      i(0),
+						Name:            github.String("zuul"),
+						StargazersCount: github.Int(0),
+						ForksCount:      github.Int(0),
 					},
 				},
 			},
@@ -365,23 +361,23 @@ func TestList(t *testing.T) {
 			wantRepos: []*repo.Repo{
 				{
 					Repository: &github.Repository{
-						Name:            str("metaflow"),
-						StargazersCount: i(20787),
-						ForksCount:      i(2963),
+						Name:            github.String("metaflow"),
+						StargazersCount: github.Int(20787),
+						ForksCount:      github.Int(2963),
 					},
 				},
 				{
 					Repository: &github.Repository{
-						Name:            str("Hystrix"),
-						StargazersCount: i(10248),
-						ForksCount:      i(728),
+						Name:            github.String("Hystrix"),
+						StargazersCount: github.Int(10248),
+						ForksCount:      github.Int(728),
 					},
 				},
 				{
 					Repository: &github.Repository{
-						Name:            str("security_monkey"),
-						StargazersCount: i(10047),
-						ForksCount:      i(792),
+						Name:            github.String("security_monkey"),
+						StargazersCount: github.Int(10047),
+						ForksCount:      github.Int(792),
 					},
 				},
 			},
